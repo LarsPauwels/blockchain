@@ -1,5 +1,6 @@
 <?php
 
+	/* Create a Database (currently in a json file) */
 	$db = "data/balance.json";
 	if (file_exists($db)) {
 		$balances = json_decode(file_get_contents($db), true);
@@ -9,9 +10,11 @@
 	}
 
 	if ("/balance" == $_SERVER["PATH_INFO"]) {
+		/* Give balance of the user (GET) */
 		$user = strtolower($_GET["user"]);
 		printf("User %s has %d Coins.", $user, $balances[$user] ?? 0);
 	} else if ("/users" == $_SERVER["PATH_INFO"] && "POST" == $_SERVER["REQUEST_METHOD"]) {
+		/* Give all users (POST) */
 		$user = strtolower($_POST["user"]);
 		if (!isset($balances[$user])) {
 			http_response_code(404);
@@ -21,6 +24,7 @@
 		file_put_contents($db, json_encode($balances));
 		print "OK";
 	} else if ("/transfer" == $_SERVER["PATH_INFO"] && "POST" == $_SERVER["REQUEST_METHOD"]) {
+		/* Make a transfer (POST) */
 		$from = strtolower($_POST["from"]);
 		if (!isset($balances[$from])) {
 			http_response_code(404);
